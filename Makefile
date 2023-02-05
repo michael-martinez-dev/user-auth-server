@@ -9,6 +9,7 @@ CONTAINER_REPO_USER = mixedmachine
 
 build: main.go pkg/* cmd/* docs
 	@go mod tidy
+	@go fmt ./...
 	@go build -o ./bin/$(APP_BIN).exe main.go
 
 lint:
@@ -29,14 +30,12 @@ db:
 dev: db build 
 	@./bin/$(APP_BIN).exe
 
-pipeline:
-	@go fmt ./...
-	@golangci-lint run
+pipeline.all: build test lint sec
 
 dockerfile:
 	@go build -o ./bin/$(APP_BIN) main.go
 
-docker: docs test lint sec
+docker: 
 	@docker build -f ./build/Dockerfile -t $(CONTAINER_REPO_USER)/$(APP_NAME):latest .
 	@docker build -f ./build/Dockerfile -t $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION) .
 
@@ -47,7 +46,7 @@ docker.run: docker
 	--name $(APP_NAME) \
 	$(APP_NAME):latest
 
-docker.push: docker
+docker.push:
 	@docker push $(CONTAINER_REPO_USER)/$(APP_NAME):latest
 	@docker push $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION)
 
