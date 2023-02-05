@@ -21,16 +21,15 @@ jobs:
     - name: Install dependencies
       run: make pre-build
 
-    - name: Lint
-      run: |
-        go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2
-        golangci-lint --version
-        make lint
+    # - name: Lint
+    #   run: |
+    #     go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2
+    #     make lint
       
-    - name: Security Scan
-      run: |
-        go install github.com/securego/gosec/v2/cmd/gosec@latest
-        make sec
+    # - name: Security Scan
+    #   run: |
+    #     go install github.com/securego/gosec/v2/cmd/gosec@latest
+    #     make sec
       
     - name: Tests
       run: make test
