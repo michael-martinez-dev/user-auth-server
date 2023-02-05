@@ -22,14 +22,15 @@ jobs:
       run: make pre-build
 
     - name: Lint
-      uses: golangci/golangci-lint-action@v3
-      with:
-        version: v1.46
+      run: |
+        go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2
+        golangci-lint --version
+        make lint
       
     - name: Security Scan
-      uses: securego/gosec@master
-      with:
-        args: ./...
+      run: |
+        go install github.com/securego/gosec/v2/cmd/gosec@latest
+        make sec
       
     - name: Tests
       run: make test
