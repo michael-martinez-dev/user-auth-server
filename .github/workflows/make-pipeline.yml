@@ -13,12 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
-    - name: pre-setup
-      run: |
-        apt-get update -y
-        apt-get upgrade -y
-        apt-get install go
 
     - name: configure
       run: ./configure
