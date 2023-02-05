@@ -11,9 +11,11 @@ CONTAINER_REPO_USER = mixedmachine
 
 
 local.build.win: main.go pkg/* cmd/* pre-build docs
+	@go mod tidy
 	@go build -o ./bin/$(APP_BIN).exe main.go
 
 local.build.lin:
+	@go mod tidy
 	@go build -o ./bin/$(APP_BIN) main.go
 
 local.dev: db local.build.win 
