@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: initialize
+    - name: Initialize
       run: ls
 
     - name: Install dependencies
@@ -33,6 +33,24 @@ jobs:
       
     - name: Tests
       run: make test
-      
-    - name: Dockerize
+
+  deployment:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+    - name: Environ File
+      run: |
+        echo "\
+        DATABASE_USER=${DATABASE_USER}\
+        DATABASE_PASS=${DATABASE_PASS}\
+        DATABASE_HOST=${DATABASE_HOST}\
+        DATABASE_NAME=${DATABASE_NAME}\
+        DATABASE_COLLECTION=${DATABASE_COLLECTION}\
+        REDIS_HOST=${REDIS_HOST}\
+        REDIS_PORT=${REDIS_PORT}\
+        REDIS_PASS=${REDIS_PASS}\
+        REDIS_DB=${REDIS_DB}\
+        JWT_SECRET_KEY=${JWT_SECRET_KEY}\
+        " >> .env.prod
+    - name: Deploy
       run: make docker.push
