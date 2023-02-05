@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongo:
+    container_name: mongo
+    hostname: mongo
+    image: mongo:latest
+    restart: on-failure
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: local
+      MONGO_INITDB_ROOT_PASSWORD: dev
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - "6379:6379"
+  mongo-express:
+    container_name: mongo-express
+    hostname: express
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - "8088:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: local
+      ME_CONFIG_MONGODB_ADMINPASSWORD: dev
+      ME_CONFIG_MONGODB_URL: mongodb://local:dev@mongo:27017/
+    depends_on:
+      - mongo
+  red-commander:
+    container_name: red-commander
+    hostname: red-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
