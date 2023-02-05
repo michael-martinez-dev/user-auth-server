@@ -1,15 +1,15 @@
 package routes
 
 import (
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/controllers"
-	_ "github.com/mixedmachine/EfficientLife/user-auth/api"
+	_ "github.com/mixedmachine/user-auth-server/api"
+	"github.com/mixedmachine/user-auth-server/pkg/controllers"
 
 	"fmt"
 	"net/http"
 
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
-	swagger "github.com/arsmn/fiber-swagger/v2"
 )
 
 const apiVersion = "v1"
@@ -58,25 +58,25 @@ func (r *authRoutes) Install(app *fiber.App) {
 // @Router / [get]
 func serviceInfo(ctx *fiber.Ctx) error {
 	return ctx.
-	Status(http.StatusOK).
-	JSON(bson.D{
-		{Key: "message", Value: "Welcome to EfficientLife"},
-		{Key: "service", Value: "user-auth"},
-		{Key: "author", Value: "MixedMachine"},
-		{Key: "status", Value: http.StatusOK},
-		{Key: "version", Value: apiVersion},
-		{Key: "api_base_endpoint", Value: "/api/" + apiVersion},
-		{Key: "api_endpoints", Value: map[string]string{
-			"GET| /": "Service info",
-			"GET| <api>/ping": "Health check",
-			"POST| <api>/signup": "Create a new user",
-			"POST| <api>/signin": "Sign in and get token",
-			"POST| <api>/refresh": "Refresh token",
-			"GET| <api>/auth": "Get user based on token",
-			"GET| <api>/users/": "Get all users",
-			"GET| <api>/users/:id": "Get user by id",
-			"PUT| <api>/users/:id": "Update user by id",
-			"DELETE| <api>/users/:id": "Delete user by id",
-		}},
-	})
+		Status(http.StatusOK).
+		JSON(bson.D{
+			{Key: "message", Value: "Welcome to EfficientLife"},
+			{Key: "service", Value: "user-auth"},
+			{Key: "author", Value: "MixedMachine"},
+			{Key: "status", Value: http.StatusOK},
+			{Key: "version", Value: apiVersion},
+			{Key: "api_base_endpoint", Value: "/api/" + apiVersion},
+			{Key: "api_endpoints", Value: map[string]string{
+				"GET| /":                  "Service info",
+				"GET| <api>/ping":         "Health check",
+				"POST| <api>/signup":      "Create a new user",
+				"POST| <api>/signin":      "Sign in and get token",
+				"POST| <api>/refresh":     "Refresh token",
+				"GET| <api>/auth":         "Get user based on token",
+				"GET| <api>/users/":       "Get all users",
+				"GET| <api>/users/:id":    "Get user by id",
+				"PUT| <api>/users/:id":    "Update user by id",
+				"DELETE| <api>/users/:id": "Delete user by id",
+			}},
+		})
 }

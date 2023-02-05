@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mixedmachine/EfficientLife/user-auth/cmd/v1/api"
+	"github.com/mixedmachine/user-auth-server/cmd/v1/api"
 )
 
 // @title User Auth API

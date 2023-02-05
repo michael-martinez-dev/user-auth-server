@@ -2,13 +2,12 @@ package db
 
 import (
 	"context"
-	"strconv"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/go-redis/redis"
 )
-
 
 type RedisConnection interface {
 	Close()
@@ -19,7 +18,7 @@ type RedisConnection interface {
 
 type redisConn struct {
 	client *redis.Client
-	ctx   context.Context
+	ctx    context.Context
 }
 
 func NewRedisConnection() RedisConnection {
@@ -32,7 +31,7 @@ func NewRedisConnection() RedisConnection {
 	}
 	c.client = redis.NewClient(&redis.Options{
 		Addr:     redis_addr,
-		Password: "",
+		Password: os.Getenv("REDIS_PASS"),
 		DB:       db,
 	})
 	_, err = c.client.Ping().Result()

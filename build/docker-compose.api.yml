@@ -2,6 +2,6 @@ version: '3.8'
 
 services:
   api:
-    image: user-auth:latest
+    image: mixedmachine/user-auth:latest-dev
     ports:
       - 9090:9090

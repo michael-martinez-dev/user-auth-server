@@ -1,4 +1,4 @@
-module github.com/mixedmachine/EfficientLife/user-auth
+module github.com/mixedmachine/user-auth-server
 
 go 1.18
 

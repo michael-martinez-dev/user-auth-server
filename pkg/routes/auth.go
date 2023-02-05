@@ -3,8 +3,8 @@ package routes
 import (
 	"net/http"
 
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/security"
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/util"
+	"github.com/mixedmachine/user-auth-server/pkg/security"
+	"github.com/mixedmachine/user-auth-server/pkg/util"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"

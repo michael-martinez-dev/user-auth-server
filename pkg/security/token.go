@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/util"
+	"github.com/mixedmachine/user-auth-server/pkg/util"
 
 	"github.com/golang-jwt/jwt/v4"
 )

@@ -9,23 +9,27 @@ COPY go.sum ./
 
 RUN go mod download
 
+ARG ENV_FILE
+
 COPY ./main.go ./main.go
 COPY ./api ./api
 COPY ./cmd ./cmd
 COPY ./pkg ./pkg
-COPY ./.env ./.env
+COPY ./${ENV_FILE} ./.env
 
 COPY ./Makefile ./Makefile
-RUN make dockerfile
+RUN make local.build.lin
 
 FROM alpine:latest
 
 WORKDIR /
 
-COPY --from=build /app/bin/server /server
-COPY ./.env /.env
+ARG ENV_FILE
 
-EXPOSE 8080
+COPY --from=build /app/bin/server /server
+COPY  ./${ENV_FILE} /.env
+
+EXPOSE 9090
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 

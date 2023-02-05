@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/db"
+	"github.com/mixedmachine/user-auth-server/pkg/db"
 
 	"context"
 	"fmt"

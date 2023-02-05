@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/controllers"
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/db"
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/repository"
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/routes"
+	"github.com/mixedmachine/user-auth-server/pkg/controllers"
+	"github.com/mixedmachine/user-auth-server/pkg/db"
+	"github.com/mixedmachine/user-auth-server/pkg/repository"
+	"github.com/mixedmachine/user-auth-server/pkg/routes"
 
 	"io"
 	"log"
@@ -16,13 +16,19 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
-	
 )
 
 func Init() {
-	err := godotenv.Load()
+	if _, err := os.Stat(".env.local"); err == nil {
+		err := godotenv.Load(".env.local")
+		if err != nil {
+			log.Fatal("Error loading .env.local file")
+		}
+		return
+	}
+	err := godotenv.Load(".env")
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal("Error loading .env file")
 	}
 }
 
@@ -74,10 +80,12 @@ func RunUserAuthApiServer() {
 func run(app *fiber.App) {
 	go func() {
 		port := os.Getenv("PORT")
-		if port == "" { port = "9090" }
+		if port == "" {
+			port = "9090"
+		}
 		err := app.Listen(":" + port)
 		if err != nil {
-			log.Fatal("Could not run server: ",err)
+			log.Fatal("Could not run server: ", err)
 		}
 	}()
 	sigChn := make(chan os.Signal, 1)

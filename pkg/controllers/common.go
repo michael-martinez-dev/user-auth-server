@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/repository"
-	"github.com/mixedmachine/EfficientLife/user-auth/pkg/util"
+	"github.com/mixedmachine/user-auth-server/pkg/repository"
+	"github.com/mixedmachine/user-auth-server/pkg/util"
 
 	"log"
 
