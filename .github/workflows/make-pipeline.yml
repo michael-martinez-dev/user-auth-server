@@ -14,11 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: configure
-      run: ./configure
+    - name: initialize
+      run: ls
 
     - name: Install dependencies
-      run: make
+      run: make pre-build
 
     - name: Lint
       run: make lint
