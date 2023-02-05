@@ -24,16 +24,24 @@ type redisConn struct {
 func NewRedisConnection() RedisConnection {
 	var c redisConn
 	var err error
-	redis_addr := fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT"))
+
+	redisOptions := redis.Options{}
+	redis_addr := fmt.Sprintf(
+		"%s:%s",
+		os.Getenv("REDIS_HOST"),
+		os.Getenv("REDIS_PORT"),
+	)
+	if pass := os.Getenv("REDIS_PASS"); pass != "" {
+		redisOptions.Password = pass
+	}
+	redisOptions.Addr = redis_addr
 	db, err := strconv.Atoi(os.Getenv("REDIS_DB"))
 	if err != nil {
 		panic(err)
 	}
-	c.client = redis.NewClient(&redis.Options{
-		Addr:     redis_addr,
-		Password: os.Getenv("REDIS_PASS"),
-		DB:       db,
-	})
+	redisOptions.DB = db
+
+	c.client = redis.NewClient(&redisOptions)
 	_, err = c.client.Ping().Result()
 	if err != nil {
 		panic(err)

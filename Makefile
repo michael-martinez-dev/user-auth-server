@@ -16,11 +16,11 @@ local.build.win: main.go pkg/* cmd/* pre-build docs
 local.build.lin:
 	@go build -o ./bin/$(APP_BIN) main.go
 
-local.dev: db build 
+local.dev: db local.build.win 
 	@./bin/$(APP_BIN).exe
 
 pre-build:
-	@go mod tidy
+	@go mod download
 	@go fmt ./...
 
 docs:

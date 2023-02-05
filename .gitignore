@@ -3,3 +3,4 @@
 .idea*
 go.sum
 api/*
+bin/*
