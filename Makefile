@@ -1,16 +1,30 @@
 APP_NAME = user-auth
-APP_VERSION = v1.2
+APP_VERSION = v1.3
 APP_BIN = server
 CONTAINER_REPO_USER = mixedmachine
 
 
-.PHONY: doc db dev pipeline docker docker.run docker.push docker.compose 
+.PHONY: local.build.lin local.build.win local.dev \
+		pre-build docs lint sec test db \
+		docker.dev docker.prod docker.run docker.compose.dev docker.push \
+		clean
 
 
-build: main.go pkg/* cmd/* docs
+local.build.win: main.go pkg/* cmd/* pre-build docs
+	@go build -o ./bin/$(APP_BIN).exe main.go
+
+local.build.lin:
+	@go build -o ./bin/$(APP_BIN) main.go
+
+local.dev: db build 
+	@./bin/$(APP_BIN).exe
+
+pre-build:
 	@go mod tidy
 	@go fmt ./...
-	@go build -o ./bin/$(APP_BIN).exe main.go
+
+docs:
+	@swag init -g ./main.go -o ./api
 
 lint:
 	@golangci-lint run
@@ -21,38 +35,33 @@ sec:
 test:
 	@go test -v ./...
 
-docs:
-	@swag init -g ./main.go -o ./api
-
 db:
 	@docker compose -f ./build/docker-compose.db.yml up -d
 
-dev: db build 
-	@./bin/$(APP_BIN).exe
+docker.dev:
+	@docker build -f ./build/Dockerfile  --build-arg ENV_FILE=.env -t $(CONTAINER_REPO_USER)/$(APP_NAME):latest-dev .
+	@docker build -f ./build/Dockerfile  --build-arg ENV_FILE=.env -t $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION)-dev .
+	@docker image prune -f
 
-pipeline.all: build test lint sec
+docker.prod:
+	@docker build -f ./build/Dockerfile  --build-arg ENV_FILE=.env.prod -t $(CONTAINER_REPO_USER)/$(APP_NAME):latest .
+	@docker build -f ./build/Dockerfile  --build-arg ENV_FILE=.env.prod -t $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION) .
+	@docker image prune -f
 
-dockerfile:
-	@go build -o ./bin/$(APP_BIN) main.go
 
-docker: 
-	@docker build -f ./build/Dockerfile -t $(CONTAINER_REPO_USER)/$(APP_NAME):latest .
-	@docker build -f ./build/Dockerfile -t $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION) .
-
-docker.run: docker
+docker.run: docker.dev
 	@docker run -d \
-	-p 8080:8080 \
-	--env-file .env.local \
+	-p 8080:9090 \
 	--name $(APP_NAME) \
-	$(APP_NAME):latest
+	$(APP_NAME):latest-dev
 
-docker.push:
-	@docker push $(CONTAINER_REPO_USER)/$(APP_NAME):latest
-	@docker push $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION)
-
-docker.compose.dev: docker
+docker.compose.dev: docker.dev
 	@docker compose -f ./build/docker-compose.db.yml up --build -d
 	@docker compose -f ./build/docker-compose.api.yml up --build -d
+
+docker.push: docker.prod
+	@docker push $(CONTAINER_REPO_USER)/$(APP_NAME):latest
+	@docker push $(CONTAINER_REPO_USER)/$(APP_NAME):$(APP_VERSION)
 
 clean:
 	@rm -f ./bin/$(APP_BIN)
