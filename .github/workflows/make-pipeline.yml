@@ -1,0 +1,39 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: pre-setup
+      run: |
+        apt-get update -y
+        apt-get upgrade -y
+        apt-get install go
+
+    - name: configure
+      run: ./configure
+
+    - name: Install dependencies
+      run: make
+
+    - name: Lint
+      run: make lint
+      
+    - name: Security Scan
+      run: make sec
+      
+    - name: Tests
+      run: make test
+      
+    - name: Dockerize
+      run: make docker.push
